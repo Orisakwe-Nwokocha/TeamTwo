@@ -11,7 +11,7 @@
     <modules>
         <module>eureka-server</module>
         <module>gateway</module>
-<!--        <module>Task-Service</module>-->
+        <module>Task-Service</module>
     </modules>
 
     <properties>
