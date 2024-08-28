@@ -11,18 +11,18 @@ import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    Optional<Task> findByAssignedUsers_UserIdAndTaskId(long userId, Long taskId);
-
-
-    Optional<Task> findByProjectIdAndTaskName(Long projectId, String taskName);
-
-
-    List<Task> findByProjectId(Long projectId);
-
-
-    List<Task> findByTaskPriority(TaskPriority taskPriority);
-
-
-    List<Task> findByTaskStatus(TaskStatus taskStatus);
+//    Optional<Task> findByAssignedUsers_UserIdAndTaskId(long userId, Long taskId);
+//
+//
+//    Optional<Task> findByProjectIdAndTaskName(Long projectId, String taskName);
+//
+//
+//    List<Task> findByProjectId(Long projectId);
+//
+//
+//    List<Task> findByTaskPriority(TaskPriority taskPriority);
+//
+//
+//    List<Task> findByTaskStatus(TaskStatus taskStatus);
 
 }
