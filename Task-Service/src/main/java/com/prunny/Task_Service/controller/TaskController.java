@@ -1,6 +1,7 @@
 package com.prunny.Task_Service.controller;
 
 import com.prunny.Task_Service.dto.ApiResponse;
+import com.prunny.Task_Service.dto.TaskDTO;
 import com.prunny.Task_Service.dto.TaskRequestDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
 import com.prunny.Task_Service.exception.NotLeaderOfProjectException;
@@ -25,18 +26,18 @@ public class TaskController {
 
 
     @PostMapping("/createTask")
-    public ResponseEntity<?> createNewTask( @RequestBody TaskRequestDTO taskRequestDTO) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+    public ResponseEntity<?> createNewTask( @RequestBody TaskDTO taskRequestDTO) throws ResourceAlreadyExistsException, ResourceNotFoundException {
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(taskManagementService.createNewTask( taskRequestDTO)) //projectId,
+                .data(taskManagementService.createNewTask(taskRequestDTO)) //projectId,
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/updateTask/{taskId}")
-    public ResponseEntity<?> updateTask(@PathVariable("taskId") Long taskId, @RequestBody TaskRequestDTO taskRequestDTO) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
+    public ResponseEntity<?> updateTask(@PathVariable("taskId") Long taskId, @RequestBody TaskDTO taskRequestDTO) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
 
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())

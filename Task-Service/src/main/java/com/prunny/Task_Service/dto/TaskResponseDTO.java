@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -18,10 +19,20 @@ public class TaskResponseDTO {
 
     private long taskId;
     private String taskName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+
     private LocalDateTime dueDate;
-    private String projectName;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private LocalDateTime completionDate;
+
+    private boolean isOverdue;
+
     private TaskStatus taskStatus;
     private Map<String, String> assignedUsers;
+
+    private List<ProjectDTO> projectDTO;
 
 }

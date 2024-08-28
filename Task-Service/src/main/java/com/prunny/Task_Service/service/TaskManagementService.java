@@ -1,6 +1,7 @@
 package com.prunny.Task_Service.service;
 
 
+import com.prunny.Task_Service.dto.TaskDTO;
 import com.prunny.Task_Service.dto.TaskRequestDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
 import com.prunny.Task_Service.enums.TaskPriority;
@@ -17,12 +18,11 @@ import java.util.List;
 public interface TaskManagementService {
 
 
-    //Long projectId,
-   TaskResponseDTO createNewTask( TaskRequestDTO taskRequest)
+   TaskResponseDTO createNewTask(TaskDTO taskRequest)
             throws ResourceNotFoundException, ResourceAlreadyExistsException;
 
 
-    TaskResponseDTO updateTask(Long taskId, TaskRequestDTO taskRequest)
+    TaskResponseDTO updateTask(Long taskId, TaskDTO taskRequest)
             throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException;
 
 

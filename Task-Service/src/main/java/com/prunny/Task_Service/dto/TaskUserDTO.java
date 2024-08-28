@@ -13,9 +13,9 @@ public class TaskUserDTO {
 
     private Long taskUserId;
 
-    /* relationships */
+
     private TaskDTO taskDTO;
     private long userId;
-    /* end of relationships */
+
 
 }
