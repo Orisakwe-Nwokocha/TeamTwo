@@ -9,13 +9,16 @@ import com.prunny.Task_Service.exception.NotLeaderOfProjectException;
 import com.prunny.Task_Service.exception.NotMemberOfProjectException;
 import com.prunny.Task_Service.exception.ResourceAlreadyExistsException;
 import com.prunny.Task_Service.exception.ResourceNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface TaskManagementService {
 
 
-    TaskResponseDTO createNewTask(Long projectId, TaskRequestDTO taskRequest)
+    //Long projectId,
+   TaskResponseDTO createNewTask( TaskRequestDTO taskRequest)
             throws ResourceNotFoundException, ResourceAlreadyExistsException;
 
 
@@ -28,9 +31,12 @@ public interface TaskManagementService {
             throws ResourceNotFoundException;
 
 
-    void deleteTask(long projectId, long taskId)
+    //long projectId,
+    void deleteTask( long taskId)
             throws ResourceNotFoundException, NotLeaderOfProjectException;
 
+
+    List<TaskResponseDTO> getAllTasks();
 
 
     List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId, Long assignedTo_UserId);
