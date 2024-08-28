@@ -11,17 +11,17 @@ import java.util.Optional;
 
 public interface TaskUserRepository extends JpaRepository<TaskUser, Long> {
 
-    Optional<TaskUser> findByUserId(Long userId);
-
-    @Query("""
-            SELECT t FROM TaskUser t WHERE t.userId =:userId
-            """)
-    List<TaskUser> findTaskUserByUserId(long userId);
-
-
-    List<TaskUser> findByTask(Task task);
-
-
-    boolean existsByUserIdAndTask_TaskId(long userId, Long taskId);
+//    Optional<TaskUser> findByUserId(Long userId);
+//
+//    @Query("""
+//            SELECT t FROM TaskUser t WHERE t.userId =:userId
+//            """)
+//    List<TaskUser> findTaskUserByUserId(long userId);
+//
+//
+//    List<TaskUser> findByTask(Task task);
+//
+//
+//    boolean existsByUserIdAndTask_TaskId(long userId, Long taskId);
 
 }

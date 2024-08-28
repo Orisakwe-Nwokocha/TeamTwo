@@ -26,6 +26,7 @@ public class Task {
     private String description;
     private LocalDateTime dueDate;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private LocalDateTime completionDate;
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
