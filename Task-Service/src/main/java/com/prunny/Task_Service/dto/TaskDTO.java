@@ -1,7 +1,5 @@
 package com.prunny.Task_Service.dto;
 
-import com.prunny.Task_Service.enums.TaskPriority;
-import com.prunny.Task_Service.enums.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,14 +22,11 @@ public class TaskDTO {
     private LocalDateTime dueDate;
     private LocalDateTime createdAt;
     private LocalDateTime completionDate;
-    private TaskStatus taskStatus;
-    private TaskPriority taskPriority;
-    private boolean hasOverdue;
-
-   //
-    private List<TaskUserDTO> assignedUsersDTO = new ArrayList<>();
-    private Long createdByUserId;
+    private String taskStatus;
+    private String taskPriority;
+    private boolean isOverdue;
+    private List<String> assignedUsersDTO = new ArrayList<>();
     private Long projectId;
-    /* end of relationships */
+
 
 }

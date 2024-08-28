@@ -31,13 +31,11 @@ public class Task {
     private TaskStatus taskStatus;
     @Enumerated(EnumType.STRING)
     private TaskPriority taskPriority;
-    private boolean hasOverdue;
+    private boolean isOverdue;
 
-    /* relationships */
-    @OneToMany
-    private List<TaskUser> assignedUsers = new ArrayList<>();
-    private Long createdByUserId;
+    @ElementCollection
+    private List<String> assignedUsers = new ArrayList<>();
     private Long projectId;
-    /* end of relationships */
+
 
 }
