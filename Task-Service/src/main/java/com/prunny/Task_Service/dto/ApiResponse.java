@@ -1,5 +1,6 @@
 package com.prunny.Task_Service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApiResponse<T> {
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime responseTime;
     private boolean success;
     private String message;

@@ -13,15 +13,13 @@ import com.prunny.Task_Service.repository.TaskRepository;
 import com.prunny.Task_Service.service.TaskManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.prunny.Task_Service.enums.TaskStatus.IN_PROGRESS;
+import static com.prunny.Task_Service.enums.TaskStatus.TO_DO;
 
 @Service
 @Slf4j
@@ -41,12 +39,13 @@ public class TaskManagementServiceImpl implements TaskManagementService {
         //find project by ID AND task name
 
         Task task = new Task();
-        task.setTaskStatus(IN_PROGRESS);
+        task.setTaskStatus(TO_DO);
         task.setTaskName(taskRequest.getTaskName());
+        task.setDescription(taskRequest.getDescription());
         task.setTaskPriority(taskRequest.getTaskPriority());
         task.setDueDate(taskRequest.getDueDate());
 
-        taskRepository.save(task);
+        task = taskRepository.save(task);
         log.info("task successfully saved to the database");
 
         // Map the saved task to TaskResponseDTO

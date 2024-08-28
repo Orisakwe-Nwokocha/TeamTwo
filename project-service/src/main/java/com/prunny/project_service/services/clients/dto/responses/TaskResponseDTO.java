@@ -1,19 +1,14 @@
-package com.prunny.Task_Service.dto;
+package com.prunny.project_service.services.clients.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.prunny.Task_Service.enums.TaskStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class TaskResponseDTO {
 
     private Long taskId;
@@ -22,7 +17,7 @@ public class TaskResponseDTO {
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime dueDate;
     private String projectName;
-    private TaskStatus taskStatus;
+    private String taskStatus;
     private Map<String, String> assignedUsers;
 
 }

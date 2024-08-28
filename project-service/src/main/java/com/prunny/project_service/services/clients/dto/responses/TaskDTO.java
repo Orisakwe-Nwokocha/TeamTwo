@@ -1,4 +1,4 @@
-package com.prunny.project_service.dto.responses;
+package com.prunny.project_service.services.clients.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,25 +7,34 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
-public class ProjectDTO {
-    private Long id;
-    private String name;
+public class TaskDTO {
+
+    private Long projectId;
+
+    private Long taskId;
+    private String taskName;
     private String description;
-    private String manager;
-    private Set<String> teamMembers;
-    private Set<Long> taskIDs;
+    private String taskStatus;
+    private String taskPriority;
+    private boolean isOverdue;
+    private List<String> assignedUsersDTO;
+
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime startDate;
+    private LocalDateTime dueDate;
+
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime endDate;
+    private LocalDateTime createdAt;
+
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime dateCreated;
+    private LocalDateTime updatedAt;
+
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime dateUpdated;
+    private LocalDateTime completionDate;
+
 }

@@ -1,5 +1,6 @@
 package com.prunny.project_service.controllers;
 
+import com.prunny.project_service.dto.requests.AddTaskRequest;
 import com.prunny.project_service.dto.requests.CreateProjectRequest;
 import com.prunny.project_service.services.ProjectService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,5 +30,11 @@ public class ProjectController {
     public ResponseEntity<?> getProjectById(@PathVariable Long id) {
         log.info("REST request to retrieve Project");
         return ResponseEntity.ok(projectService.getProjectBy(id));
+    }
+
+    @PostMapping("/add-task")
+    public ResponseEntity<?> addTask(@RequestBody AddTaskRequest request) {
+        log.info("REST request to add task");
+        return ResponseEntity.status(CREATED).body(projectService.addTask(request));
     }
 }
