@@ -1,6 +1,7 @@
 package com.prunny.Task_Service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,28 +14,30 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskDTO {
 
-    private Long projectId;
-    private Long taskId;
+
     private String taskName;
     private String description;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime dueDate;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime updatedAt;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime completionDate;
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-    private List<String> assignedUsersDTO;
+   // private List<String> assignedUsersDTO = new ArrayList<>();
+   private List<Long> assignedUsersDTO;
+    private Long projectId;
 
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime dueDate;
-
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime createdAt;
-
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime updatedAt;
-
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
-    private LocalDateTime completionDate;
 
 
 }

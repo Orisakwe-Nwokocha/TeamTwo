@@ -9,13 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskUserDTO {
+public class CommentDto {
 
-    private Long taskUserId;
-
-
-    private TaskDTO taskDTO;
-    private long userId;
-
+    private long projectId;
+    private long taskId;
+    private String text;
 
 }
