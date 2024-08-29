@@ -2,12 +2,19 @@ package com.prunny.project_service.controllers;
 
 import com.prunny.project_service.dto.requests.AddTaskRequest;
 import com.prunny.project_service.dto.requests.CreateProjectRequest;
+
 import com.prunny.project_service.dto.responses.ProjectProgressResponse;
+
+import com.prunny.project_service.dto.responses.ProjectDTO;
 import com.prunny.project_service.services.ProjectService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -56,4 +63,20 @@ public class ProjectController {
         modelAndView.addObject("overallProgress", response.getOverallProgress());
         return modelAndView;
     }
+
+    //the changes I made
+
+//    @GetMapping("/{id}")
+//    ResponseEntity<Map<String, Object>> getNextOfKinByMailAddress(@PathVariable("id") Long id )  {
+//
+//        ProjectDTO project = projectService.getProjectBy(id).getData();
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("status", "success");
+//        response.put("statusCode", HttpStatus.OK.value());
+//        response.put("message", "Project successfully retrieved");
+//        response.put("data", project);
+//        return ResponseEntity.ok(response);
+//    }
+
+
 }

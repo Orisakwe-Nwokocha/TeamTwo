@@ -1,6 +1,7 @@
 package com.prunny.Task_Service.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.prunny.Task_Service.enums.TaskPriority;
 import com.prunny.Task_Service.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -34,8 +35,15 @@ public class Task {
     private TaskPriority taskPriority;
     private boolean isOverdue;
 
-    @ElementCollection
-    private List<String> assignedUsers = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "task_assigned_users",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_user_id")
+    )
+    private List<TaskUser> assignedUsers = new ArrayList<>();
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
     private Long projectId;
 
 
