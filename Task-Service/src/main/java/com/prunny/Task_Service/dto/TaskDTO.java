@@ -24,15 +24,18 @@ public class TaskDTO {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime dueDate;
 
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime updatedAt;
-
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime completionDate;
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-    private List<String> assignedUsersDTO = new ArrayList<>();
+   // private List<String> assignedUsersDTO = new ArrayList<>();
+   private List<Long> assignedUsersDTO;
     private Long projectId;
 
 

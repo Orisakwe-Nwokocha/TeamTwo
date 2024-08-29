@@ -24,9 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.prunny.Task_Service.enums.TaskStatus.IN_PROGRESS;
@@ -49,47 +47,49 @@ public class TaskManagementServiceImpl implements TaskManagementService {
     @Override
     public TaskResponseDTO createNewTask(TaskDTO taskRequest) throws ResourceNotFoundException, ResourceAlreadyExistsException {
 
-        //get project by id
-    //  projectClient.getProjectById(id);
+       //VALIDATION
+        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(taskRequest.getProjectId());
 
-        //check if genre exist first, by checking the genre service
-        ResponseEntity<Map<String, Object>> response = (ResponseEntity<Map<String, Object>>) projectClient.getProjectById(taskRequest.getProjectId());
 
         if (response == null || response.getBody() == null) {
             throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
         }
-        //use builder
 
-        Task task = new Task();
-        task.setTaskStatus(IN_PROGRESS);
-        task.setDescription(taskRequest.getDescription());
-        task.setTaskName(taskRequest.getTaskName());
-        task.setTaskPriority(TaskPriority.valueOf(taskRequest.getTaskPriority()));
+        Task task = modelMapper.map(taskRequest, Task.class);
         task.setTaskStatus(TaskStatus.valueOf(taskRequest.getTaskStatus()));
-        task.setCompletionDate(null);
+        task.setTaskPriority(TaskPriority.valueOf(taskRequest.getTaskPriority()));
         task.setProjectId(taskRequest.getProjectId());
         task.setCreatedAt(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
         task.setOverdue(false);
-        task.setAssignedUsers(taskRequest.getAssignedUsersDTO());
-        task.setDueDate(taskRequest.getDueDate());
+
 
         taskRepository.save(task);
-        log.info("task successfully saved to the database");
+        log.info("Task successfully created and saved to the database");
+
 
         TaskResponseDTO taskResponseDto = modelMapper.map(task, TaskResponseDTO.class);
 
-        ProjectDTO projectDto = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-
-        taskResponseDto.setProjectDTO(Collections.singletonList(projectDto));
+        // Extract project information from the response
+        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
 
         return taskResponseDto;
-
     }
+
+
 
     @Override
     public TaskResponseDTO updateTask(Long taskId, TaskDTO taskRequest)
             throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
+
+        //VALIDATION
+        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(taskRequest.getProjectId());
+
+
+        if (response == null || response.getBody() == null) {
+            throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
+        }
 
 
         Task taskToUpdate = taskRepository.findById(taskId)
@@ -107,24 +107,47 @@ public class TaskManagementServiceImpl implements TaskManagementService {
         taskRepository.save(taskToUpdate);
         log.info("Edited task successfully saved to the database");
 
-        return modelMapper.map(taskToUpdate, TaskResponseDTO.class);
+        TaskResponseDTO taskResponseDto = modelMapper.map(taskToUpdate, TaskResponseDTO.class);
+
+        // Extract project information from the response
+        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
+
+        return taskResponseDto;
     }
 
     @Override
-    public TaskResponseDTO getTaskDetails(Long taskId) throws ResourceNotFoundException {
+    public TaskResponseDTO getTaskDetails(Long projectId, Long taskId) throws ResourceNotFoundException {
 
+        //VALIDATION
+        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(projectId);
+
+
+        if (response == null || response.getBody() == null) {
+            throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
+        }
+
+        // Fetch the task by ID
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException("task not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task with ID " + taskId + " not found."));
+
 
         TaskResponseDTO taskResponse = modelMapper.map(task, TaskResponseDTO.class);
-        log.info("Retrieved task details successfully");
+        log.info("Retrieved task details successfully for Task ID: {}", taskId);
+
+        // Extract project information from the response
+        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+        taskResponse.setProjectDTO(Collections.singletonList(projectDTO));
+
 
         return taskResponse;
     }
 
    // long projectId,
     @Override
-    public void deleteTask( long taskId) throws ResourceNotFoundException, NotLeaderOfProjectException {
+    public void deleteTask(Long projectId,long taskId) throws ResourceNotFoundException, NotLeaderOfProjectException {
+
+        projectClient.getProjectById(projectId);
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("task not found"));
@@ -145,9 +168,31 @@ public class TaskManagementServiceImpl implements TaskManagementService {
     }
 
     @Override
-    public List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId, Long assignedTo_UserId) {
-        return List.of();
+    public List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId) {
+
+        List<Task> tasks;
+
+        if (status != null && priority != null && projectId != null) {
+            tasks = taskRepository.findByTaskStatusAndTaskPriorityAndProjectId(status, priority, projectId);
+        } else if (status != null && priority != null) {
+            tasks = taskRepository.findByTaskStatusAndTaskPriority(status, priority);
+        } else if (status != null && projectId != null) {
+            tasks = taskRepository.findByTaskStatusAndProjectId(status, projectId);
+        } else if (priority != null && projectId != null) {
+            tasks = taskRepository.findByTaskPriorityAndProjectId(priority, projectId);
+        } else if (status != null) {
+            tasks = taskRepository.findByTaskStatus(status);
+        } else if (priority != null) {
+            tasks = taskRepository.findByTaskPriority(priority);
+        } else if (projectId != null) {
+            tasks = taskRepository.findByProjectId(projectId);
+        } else {
+            tasks = new ArrayList<>(); // No criteria provided
+        }
+
+        // Convert tasks to DTOs using stream
+        return tasks.stream()
+                .map(task -> modelMapper.map(task, TaskResponseDTO.class))
+                .collect(Collectors.toList());
     }
-
-
 }

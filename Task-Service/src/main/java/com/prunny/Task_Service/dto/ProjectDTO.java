@@ -28,4 +28,6 @@ public class ProjectDTO {
     private LocalDateTime dateCreated;
 
     private LocalDateTime dateUpdated;
+
+    private LocalDateTime responseTime;
 }

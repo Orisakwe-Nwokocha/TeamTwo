@@ -20,12 +20,16 @@ public class TaskResponseDTO {
     private long taskId;
     private String taskName;
 
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
     private LocalDateTime dueDate;
 
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
     private LocalDateTime updatedAt;
 
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
     private LocalDateTime completionDate;
 
     private boolean isOverdue;

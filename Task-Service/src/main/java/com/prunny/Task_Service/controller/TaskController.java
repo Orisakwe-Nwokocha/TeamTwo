@@ -4,6 +4,8 @@ import com.prunny.Task_Service.dto.ApiResponse;
 import com.prunny.Task_Service.dto.TaskDTO;
 import com.prunny.Task_Service.dto.TaskRequestDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
+import com.prunny.Task_Service.enums.TaskPriority;
+import com.prunny.Task_Service.enums.TaskStatus;
 import com.prunny.Task_Service.exception.NotLeaderOfProjectException;
 import com.prunny.Task_Service.exception.NotMemberOfProjectException;
 import com.prunny.Task_Service.exception.ResourceAlreadyExistsException;
@@ -48,13 +50,13 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("get/{taskId}")
-    public ResponseEntity<?> getTaskDetails(@PathVariable("taskId") Long taskId) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
+    @GetMapping("get/{projectId}/{taskId}")
+    public ResponseEntity<?> getTaskDetails(@PathVariable("projectId") Long projectId,@PathVariable("taskId") Long taskId) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
 
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(taskManagementService.getTaskDetails(taskId))
+                .data(taskManagementService.getTaskDetails(projectId,taskId))
                 .build();
 
         return ResponseEntity.ok(response);
@@ -82,5 +84,23 @@ public class TaskController {
     public ResponseEntity<?> deleteTask(@PathVariable("taskId") Long taskId) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
 
         return ResponseEntity.ok("Task successfully deleted");
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> searchTasks(
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) TaskPriority priority,
+            @RequestParam(required = false) Long projectId) {
+
+        List<TaskResponseDTO> tasks = taskManagementService.searchTaskBasedOnDifferentCriteria(status, priority, projectId);
+
+        ApiResponse<List<TaskResponseDTO>> response = ApiResponse.<List<TaskResponseDTO>>builder()
+                .responseTime(LocalDateTime.now())
+                .success(true)
+                .data(tasks)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

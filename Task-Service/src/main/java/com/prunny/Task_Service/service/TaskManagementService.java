@@ -27,18 +27,18 @@ public interface TaskManagementService {
 
 
 
-    TaskResponseDTO getTaskDetails(Long taskId)
+    TaskResponseDTO getTaskDetails(Long projectId, Long taskId)
             throws ResourceNotFoundException;
 
 
     //long projectId,
-    void deleteTask( long taskId)
+    void deleteTask(Long projectId, long taskId)
             throws ResourceNotFoundException, NotLeaderOfProjectException;
 
 
     List<TaskResponseDTO> getAllTasks();
 
 
-    List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId, Long assignedTo_UserId);
+    List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId);
 
 }
