@@ -1,6 +1,7 @@
 package com.prunny.Task_Service.controller;
 
 import com.prunny.Task_Service.dto.ApiResponse;
+import com.prunny.Task_Service.dto.TaskDTO;
 import com.prunny.Task_Service.dto.TaskRequestDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
 import com.prunny.Task_Service.exception.NotLeaderOfProjectException;
@@ -9,7 +10,6 @@ import com.prunny.Task_Service.exception.ResourceAlreadyExistsException;
 import com.prunny.Task_Service.exception.ResourceNotFoundException;
 import com.prunny.Task_Service.service.TaskManagementService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,4 +82,17 @@ public class TaskController {
 
         return ResponseEntity.ok("Task successfully deleted");
     }
+
+    @GetMapping("/getTasks")
+    public ResponseEntity<?> getAllTasksForProject(@RequestParam Long projectId) throws ResourceNotFoundException {
+        List<TaskDTO> tasksForProject = taskManagementService.getAllTasksForProject(projectId);
+        ApiResponse<List<TaskDTO>> response = ApiResponse.<List<TaskDTO>>builder()
+                .responseTime(LocalDateTime.now())
+                .success(true)
+                .message("Tasks retrieved successfully")
+                .data(tasksForProject)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
 }

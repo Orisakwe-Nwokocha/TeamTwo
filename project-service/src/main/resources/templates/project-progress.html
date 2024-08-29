@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Details and Progress</title>
+    <style>
+        .model-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            /*overflow: hidden;*/
+            margin: 5px 0;
+        }
+        .progress-bar-inner {
+            height: 30px;
+            background-color: #4caf50;
+            text-align: center;
+            color: white;
+            padding-top: 15px;
+            line-height: 20px;
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+<h1 th:text="'Progress report for Project: ' + ${project.name}"></h1>
+<div class="progress-bar">
+    <div class="model-container">
+        <p><strong>Description:</strong> <span th:text="${project.description}"></span></p>
+        <p><strong>Manager:</strong> <span th:text="${project.manager}"></span></p>
+        <p><strong>Start Date:</strong> <span th:text="${@dateUtils.formatDateTime(project.startDate)}"></span></p>
+        <p><strong>End Date:</strong> <span th:text="${@dateUtils.formatDateTime(project.endDate)}"></span></p>
+        <div class="progress-bar-inner" th:style="'width: ' + ${overallProgress} + '%'">
+            <span th:text="'Overall Progress: ' + ${overallProgress} + '%'"></span>
+        </div>
+    </div>
+
+</div>
+<h2>Task Details</h2>
+<div id="tasks-container">
+    <th:block th:each="task : ${tasks}">
+        <div class="model-container">
+            <h3 th:text="${task.taskName}"></h3>
+            <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
+            <p><strong>Status:</strong> <span th:text="${task.taskStatus}"></span></p>
+            <p><strong>Priority:</strong> <span th:text="${task.taskPriority}"></span></p>
+            <p><strong>Created At:</strong> <span th:text="${@dateUtils.formatDateTime(task.createdAt)}"></span></p>
+            <p><strong>Due Date:</strong> <span th:text="${@dateUtils.formatDateTime(task.dueDate)}"></span></p>
+            <p><strong>Completion Date:</strong> <span th:text="${@dateUtils.formatDateTime(task.completionDate)}"></span></p>
+            <p><strong>Overdue:</strong> <span th:text="${task.isOverdue ? 'Yes' : 'No'}"></span></p>
+            <p><strong>Assigned Users:</strong> <span th:text="${task.assignedUsersDTO}"></span></p>
+
+        </div>
+    </th:block>
+</div>
+</body>
+</html>

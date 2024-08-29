@@ -1,12 +1,12 @@
 package com.prunny.Task_Service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,19 +15,26 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskDTO {
 
+    private Long projectId;
     private Long taskId;
-
     private String taskName;
     private String description;
-    private LocalDateTime dueDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime completionDate;
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-    private List<String> assignedUsersDTO = new ArrayList<>();
-    private Long projectId;
+    private List<String> assignedUsersDTO;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime dueDate;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime updatedAt;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime completionDate;
 
 
 }

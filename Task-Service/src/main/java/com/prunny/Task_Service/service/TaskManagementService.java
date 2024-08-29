@@ -1,6 +1,7 @@
 package com.prunny.Task_Service.service;
 
 
+import com.prunny.Task_Service.dto.TaskDTO;
 import com.prunny.Task_Service.dto.TaskRequestDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
 import com.prunny.Task_Service.enums.TaskPriority;
@@ -41,4 +42,5 @@ public interface TaskManagementService {
 
     List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId, Long assignedTo_UserId);
 
+    List<TaskDTO> getAllTasksForProject(Long projectId) throws ResourceNotFoundException;
 }

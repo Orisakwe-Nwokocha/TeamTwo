@@ -28,4 +28,9 @@ public class AppConfig {
         objectMapper.findAndRegisterModules();
         return objectMapper;
     }
+
+    @Bean
+    public DateUtils dateUtils() {
+        return new DateUtils();
+    }
 }
