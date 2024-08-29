@@ -56,4 +56,19 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$.message").value("Project not found"))
                 .andDo(print());
     }
+
+    @Test
+    void getAllTasksForProjectTest() throws Exception {
+        mockMvc.perform(get("/projects/1/tasks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andDo(print());
+    }
+
+    @Test
+    void trackProgressForProjectTest() throws Exception {
+        mockMvc.perform(get("/projects/1/progress"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }

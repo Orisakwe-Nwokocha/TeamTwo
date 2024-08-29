@@ -10,39 +10,45 @@
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
+            background-color: #f9f9f9;
         }
         .progress-bar {
             width: 100%;
-            background-color: #f3f3f3;
+            background-color: #e0e0e0;
             border-radius: 5px;
-            /*overflow: hidden;*/
-            margin: 5px 0;
+            margin: 10px 0;
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
         }
         .progress-bar-inner {
-            height: 30px;
-            background-color: #4caf50;
+            height: 40px;
+            background: linear-gradient(to right, #4caf50, #81c784);
             text-align: center;
             color: white;
-            padding-top: 15px;
-            line-height: 20px;
+            line-height: 40px;
             width: 0;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        .progress-text {
+            font-size: 18px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 <h1 th:text="'Progress report for Project: ' + ${project.name}"></h1>
-<div class="progress-bar">
-    <div class="model-container">
-        <p><strong>Description:</strong> <span th:text="${project.description}"></span></p>
-        <p><strong>Manager:</strong> <span th:text="${project.manager}"></span></p>
-        <p><strong>Start Date:</strong> <span th:text="${@dateUtils.formatDateTime(project.startDate)}"></span></p>
-        <p><strong>End Date:</strong> <span th:text="${@dateUtils.formatDateTime(project.endDate)}"></span></p>
+<div class="model-container">
+    <p><strong>Description:</strong> <span th:text="${project.description}"></span></p>
+    <p><strong>Manager:</strong> <span th:text="${project.manager}"></span></p>
+    <p><strong>Start Date:</strong> <span th:text="${@dateUtils.formatDateTime(project.startDate)}"></span></p>
+    <p><strong>End Date:</strong> <span th:text="${@dateUtils.formatDateTime(project.endDate)}"></span></p>
+    <div class="progress-bar">
         <div class="progress-bar-inner" th:style="'width: ' + ${overallProgress} + '%'">
-            <span th:text="'Overall Progress: ' + ${overallProgress} + '%'"></span>
+            <span class="progress-text" th:text="'Overall Progress: ' + ${overallProgress} + '%'"></span>
         </div>
     </div>
-
 </div>
+
 <h2>Task Details</h2>
 <div id="tasks-container">
     <th:block th:each="task : ${tasks}">
