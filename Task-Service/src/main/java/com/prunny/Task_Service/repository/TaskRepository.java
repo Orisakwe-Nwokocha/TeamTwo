@@ -2,12 +2,9 @@ package com.prunny.Task_Service.repository;
 
 
 import com.prunny.Task_Service.entity.Task;
-import com.prunny.Task_Service.enums.TaskPriority;
-import com.prunny.Task_Service.enums.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
@@ -25,4 +22,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 //
 //    List<Task> findByTaskStatus(TaskStatus taskStatus);
 
+    boolean existsByProjectId(Long projectId);
+
+    List<Task> findByProjectId(Long projectId);
 }

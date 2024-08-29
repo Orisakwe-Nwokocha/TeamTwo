@@ -6,6 +6,7 @@ import com.prunny.project_service.dto.requests.AddTaskRequest;
 import com.prunny.project_service.dto.requests.CreateProjectRequest;
 import com.prunny.project_service.dto.responses.ApiResponse;
 import com.prunny.project_service.dto.responses.ProjectDTO;
+import com.prunny.project_service.dto.responses.ProjectProgressResponse;
 import com.prunny.project_service.exceptions.ResourceNotFoundException;
 import com.prunny.project_service.services.ProjectService;
 import com.prunny.project_service.services.clients.TaskServiceClient;
@@ -16,6 +17,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static java.time.LocalDateTime.now;
 
@@ -58,6 +61,48 @@ public class ProjectServiceImpl implements ProjectService {
         taskDTO.setProjectId(projectId);
         log.info("{} : {}", message, taskDTO);
         return buildApiResponse(taskDTO, message);
+    }
+
+    @Override
+    public ApiResponse<List<TaskDTO>> getAllTasksForProject(Long id) {
+        log.info("Request to retrieve tasks for Project: {}", id);
+        if (!projectRepository.existsById(id))
+            throw new ResourceNotFoundException("Project with id " + id + " not found");
+        var tasks = fetchTasksFromTaskServiceByProject(id);
+        String message = "Tasks retrieved successfully for Project: " + id;
+        log.info("{}", message);
+        return buildApiResponse(tasks, message);
+    }
+
+    @Override
+    public ProjectProgressResponse trackProjectProgress(Long id) {
+        log.info("Request to track project progress for Project: {}", id);
+        Project project = getBy(id);
+        ProjectProgressResponse response = new ProjectProgressResponse();
+        response.setProject(project);
+        if (project.getTaskIDs().isEmpty()) {
+            log.info("No tasks found for Project: {}", id);
+            response.setOverallProgress("0");
+            response.setTasks(List.of());
+            return response;
+        }
+        var tasks = fetchTasksFromTaskServiceByProject(id);
+        long completedTasks = tasks.stream()
+                                    .filter(task -> task.getTaskStatus().equals("COMPLETED"))
+                                    .count();
+        double percentage = ((double) completedTasks / tasks.size()) * 100;
+        String overallProgress = String.format("%.0f", percentage);
+        response.setOverallProgress(overallProgress);
+        response.setTasks(tasks);
+        log.info("Project overall progress: {}", overallProgress);
+        return response;
+    }
+
+    private List<TaskDTO> fetchTasksFromTaskServiceByProject(Long id) {
+        log.info("Fetching all tasks from task service");
+        var tasks = taskServiceClient.getAllTasksForProject(id).getData();
+        log.info("Tasks retrieved successfully from task service");
+        return tasks;
     }
 
     private TaskDTO updateProjectAndGetTaskDTO(AddTaskRequest request, Long projectId) {

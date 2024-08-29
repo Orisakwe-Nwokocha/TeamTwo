@@ -1,5 +1,6 @@
 package com.prunny.Task_Service.serviceImpl;
 
+import com.prunny.Task_Service.dto.TaskDTO;
 import com.prunny.Task_Service.dto.TaskRequestDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
 import com.prunny.Task_Service.entity.Task;
@@ -26,7 +27,7 @@ import static com.prunny.Task_Service.enums.TaskStatus.TO_DO;
 public class TaskManagementServiceImpl implements TaskManagementService {
 
     private final TaskRepository taskRepository;
-     ModelMapper modelMapper = new ModelMapper();
+    ModelMapper modelMapper = new ModelMapper();
 
     public TaskManagementServiceImpl(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -114,6 +115,15 @@ public class TaskManagementServiceImpl implements TaskManagementService {
     @Override
     public List<TaskResponseDTO> searchTaskBasedOnDifferentCriteria(TaskStatus status, TaskPriority priority, Long projectId, Long assignedTo_UserId) {
         return List.of();
+    }
+
+    @Override
+    public List<TaskDTO> getAllTasksForProject(Long projectId) throws ResourceNotFoundException {
+        if (!taskRepository.existsByProjectId(projectId))
+            throw new ResourceNotFoundException("Task does not exist for project");
+        List<Task> tasks = taskRepository.findByProjectId(projectId);
+        log.info("Retrieved tasks successfully");
+        return List.of(modelMapper.map(tasks, TaskDTO[].class));
     }
 
 
