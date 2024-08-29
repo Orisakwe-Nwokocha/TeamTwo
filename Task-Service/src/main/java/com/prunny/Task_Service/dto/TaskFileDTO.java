@@ -1,6 +1,5 @@
 package com.prunny.Task_Service.dto;
 
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskUserDTO {
+public class TaskFileDTO {
 
-    @Email
-    private String userEmail;
-
+    private String id;
+    private String fileName;
+    private String fileType;
+    private long fileSize;
+    private String fileUrl;
 }
-//    private Long taskUserId;
-//    private TaskDTO taskDTO;
-//    private long userId;

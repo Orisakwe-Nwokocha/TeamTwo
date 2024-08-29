@@ -35,15 +35,20 @@ public class Task {
     private TaskPriority taskPriority;
     private boolean isOverdue;
 
-    @ManyToMany
-    @JoinTable(
-            name = "task_assigned_users",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_user_id")
-    )
-    private List<TaskUser> assignedUsers = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "task_assigned_users",
+//            joinColumns = @JoinColumn(name = "task_id"),
+//            inverseJoinColumns = @JoinColumn(name = "task_user_id")
+//    )
+//    private List<TaskUser> assignedUsers = new ArrayList<>();
+@ElementCollection
+private List<String> assignedUserEmails = new ArrayList<>();
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<TaskFile> files = new ArrayList<>();
     private Long projectId;
 
 

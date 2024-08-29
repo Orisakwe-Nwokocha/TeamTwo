@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface TaskAssignmentService {
 
-    TaskResponseDTO assignTaskToUsers(Long taskId, List<TaskUserDTO> assignedUsersDTO)
+    TaskResponseDTO assignTaskToUsers(Long taskId,Long projectId, TaskUserDTO taskUserDTO)
             throws ResourceNotFoundException, ResourceAlreadyExistsException;
 
 

@@ -167,7 +167,7 @@ public class TaskManagementServiceImpl implements TaskManagementService {
 
     @Override
     public List<TaskResponseDTO> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll(); // Adjust this if you have a specific query to get tasks
+        List<Task> tasks = taskRepository.findAll();
 
         // Convert the list of Task entities to a list of TaskResponseDTO
         return tasks.stream()
