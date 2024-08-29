@@ -49,7 +49,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/progress")
-    public ModelAndView trackProjectOverallProgress(@PathVariable Long id) {
+    public ModelAndView trackProgressOfProject(@PathVariable Long id) {
         log.info("REST request to track overall progress for project");
         ProjectProgressResponse response = projectService.trackProjectProgress(id);
         ModelAndView modelAndView = new ModelAndView("project-progress");
