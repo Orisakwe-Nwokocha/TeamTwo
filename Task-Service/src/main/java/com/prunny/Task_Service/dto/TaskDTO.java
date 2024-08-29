@@ -17,27 +17,27 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskDTO {
 
+    private Long projectId;
 
+    private Long taskId;
     private String taskName;
     private String description;
-
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
-    private LocalDateTime dueDate;
-
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
-    private LocalDateTime createdAt;
-
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
-    private LocalDateTime updatedAt;
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
-    private LocalDateTime completionDate;
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-   // private List<String> assignedUsersDTO = new ArrayList<>();
-   private List<Long> assignedUsersDTO;
-    private Long projectId;
+    private List<String> assignedUsersDTO;
 
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime dueDate;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime updatedAt;
+
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private LocalDateTime completionDate;
 
 
 }

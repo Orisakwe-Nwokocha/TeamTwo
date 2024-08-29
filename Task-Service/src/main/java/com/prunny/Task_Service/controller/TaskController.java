@@ -27,7 +27,7 @@ public class TaskController {
 
 
     @PostMapping("/createTask")
-    public ResponseEntity<?> createNewTask( @RequestBody TaskDTO taskRequestDTO) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+    public ResponseEntity<?> createNewTask( @RequestBody TaskRequestDTO taskRequestDTO) throws ResourceAlreadyExistsException, ResourceNotFoundException {
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)

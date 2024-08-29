@@ -21,8 +21,9 @@ public class TaskRequestDTO {
     private String taskName;
     private String description;
     @FutureOrPresent
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime dueDate;
     private TaskStatus taskStatus;
     private TaskPriority taskPriority;
-
+    private Long projectId;
 }

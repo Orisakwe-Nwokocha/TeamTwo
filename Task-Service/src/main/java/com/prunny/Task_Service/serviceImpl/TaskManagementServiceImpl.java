@@ -52,30 +52,26 @@ public class TaskManagementServiceImpl implements TaskManagementService {
 
 
     @Override
-    public TaskResponseDTO createNewTask(TaskDTO taskRequest) throws ResourceNotFoundException, ResourceAlreadyExistsException {
+    public TaskResponseDTO createNewTask(TaskRequestDTO taskRequest) throws ResourceNotFoundException, ResourceAlreadyExistsException {
 
+        //TODO: no need for validation since this call is only made through the project service
+        //TODO: the validation of a project is done in the project service
        //VALIDATION
-        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(taskRequest.getProjectId());
-
-
-        if (response == null || response.getBody() == null) {
-            throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
-        }
+//        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(taskRequest.getProjectId());
+//
+//
+//        if (response == null || response.getBody() == null) {
+//            throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
+//        }
 
         Task task = modelMapper.map(taskRequest, Task.class);
-        task.setTaskStatus(TaskStatus.valueOf(taskRequest.getTaskStatus()));
-        task.setTaskPriority(TaskPriority.valueOf(taskRequest.getTaskPriority()));
-        task.setProjectId(taskRequest.getProjectId());
-        task.setCreatedAt(LocalDateTime.now());
-        task.setUpdatedAt(LocalDateTime.now());
-        task.setOverdue(false);
-
-
-
         task.setTaskStatus(TO_DO);
         task.setTaskName(taskRequest.getTaskName());
         task.setDescription(taskRequest.getDescription());
+        task.setTaskPriority(taskRequest.getTaskPriority());
+        task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(taskRequest.getDueDate());
+        task.setProjectId(taskRequest.getProjectId());
 
         task = taskRepository.save(task);
         log.info("task successfully saved to the database");
@@ -84,14 +80,11 @@ public class TaskManagementServiceImpl implements TaskManagementService {
         log.info("Task successfully created and saved to the database");
 
 
-
-        TaskResponseDTO taskResponseDto = modelMapper.map(task, TaskResponseDTO.class);
-
         // Extract project information from the response
-        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
+//        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+//        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
 
-        return taskResponseDto;
+        return modelMapper.map(task, TaskResponseDTO.class);
     }
 
 
@@ -124,13 +117,11 @@ public class TaskManagementServiceImpl implements TaskManagementService {
         taskRepository.save(taskToUpdate);
         log.info("Edited task successfully saved to the database");
 
-        TaskResponseDTO taskResponseDto = modelMapper.map(taskToUpdate, TaskResponseDTO.class);
-
         // Extract project information from the response
-        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
+//        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+//        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
 
-        return taskResponseDto;
+        return modelMapper.map(taskToUpdate, TaskResponseDTO.class);
     }
 
     @Override
@@ -153,8 +144,8 @@ public class TaskManagementServiceImpl implements TaskManagementService {
         log.info("Retrieved task details successfully for Task ID: {}", taskId);
 
         // Extract project information from the response
-        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-        taskResponse.setProjectDTO(Collections.singletonList(projectDTO));
+//        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+//        taskResponse.setProjectDTO(Collections.singletonList(projectDTO));
 
 
         return taskResponse;

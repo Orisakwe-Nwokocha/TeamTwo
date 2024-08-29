@@ -13,4 +13,5 @@ public class TaskRequestDTO {
     private LocalDateTime dueDate;
     private String taskStatus;
     private String taskPriority;
+    private Long projectId;
 }

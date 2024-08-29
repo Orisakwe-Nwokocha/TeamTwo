@@ -18,7 +18,7 @@ import java.util.List;
 public interface TaskManagementService {
 
 
-   TaskResponseDTO createNewTask(TaskDTO taskRequest)
+   TaskResponseDTO createNewTask(TaskRequestDTO taskRequest)
             throws ResourceNotFoundException, ResourceAlreadyExistsException;
 
 

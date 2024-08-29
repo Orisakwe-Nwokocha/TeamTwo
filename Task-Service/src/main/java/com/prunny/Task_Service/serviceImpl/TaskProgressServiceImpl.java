@@ -70,8 +70,8 @@ public class TaskProgressServiceImpl implements TaskProgressService {
 
         TaskResponseDTO taskResponse = modelMapper.map(task,TaskResponseDTO.class);
 
-        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-        taskResponse.setProjectDTO(Collections.singletonList(projectDTO));
+//        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
+//        taskResponse.setProjectDTO(Collections.singletonList(projectDTO));
 
       return taskResponse;
     }
