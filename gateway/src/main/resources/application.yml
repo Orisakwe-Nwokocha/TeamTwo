@@ -17,7 +17,7 @@ spring:
         - id: Report-Service
           uri: ${REPORT_ROUTE_URI:http://localhost:8084/}
           predicates:
-            - Path=/api/v1/
+            - Path=/api/v1/report/**
 
 eureka:
   client:
