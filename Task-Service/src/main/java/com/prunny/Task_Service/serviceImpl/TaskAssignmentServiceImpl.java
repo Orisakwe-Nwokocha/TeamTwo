@@ -1,8 +1,8 @@
 package com.prunny.Task_Service.serviceImpl;
 
 import com.prunny.Task_Service.client.ProjectClient;
+import com.prunny.Task_Service.dto.AssignTaskDTO;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
-import com.prunny.Task_Service.dto.TaskUserDTO;
 import com.prunny.Task_Service.entity.Task;
 import com.prunny.Task_Service.exception.ResourceAlreadyExistsException;
 import com.prunny.Task_Service.exception.ResourceNotFoundException;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
 
 @Service
 @Slf4j
@@ -31,7 +30,7 @@ public class TaskAssignmentServiceImpl implements TaskAssignmentService {
         this.modelMapper = modelMapper;
     }
 
-    public TaskResponseDTO assignTaskToUsers(Long taskId,Long projectId, TaskUserDTO taskUserDTO)
+    public TaskResponseDTO assignTaskToUsers(Long taskId,Long projectId, AssignTaskDTO requestDTO)
             throws ResourceNotFoundException, ResourceAlreadyExistsException {
 
         //confirm the project
@@ -45,20 +44,11 @@ public class TaskAssignmentServiceImpl implements TaskAssignmentService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with ID: " + taskId));
 
-        // Confirm and validate user email from UserService via FeignClient
-//        UserDTO userDTO = userServiceClient.getUserByEmail(taskUserDTO.getUserEmail());
-//        if (userDTO == null) {
-//            throw new ResourceNotFoundException("User not found with email: " + taskUserDTO.getUserEmail());
-//        }
 
-        if (task.getAssignedUserEmails().contains(taskUserDTO.getUserEmail())) {
-            throw new ResourceAlreadyExistsException("User is already assigned to this task.");
-        }
+        task.getAssignedUserEmails().addAll(requestDTO.getUserEmails());
 
-        task.getAssignedUserEmails().add(taskUserDTO.getUserEmail());
-
-        taskRepository.save(task);
-        log.info("Task assigned to this user");
+        task = taskRepository.save(task);
+        log.info("Task assigned to users: {}", requestDTO.getUserEmails());
 
         return modelMapper.map(task, TaskResponseDTO.class);
     }

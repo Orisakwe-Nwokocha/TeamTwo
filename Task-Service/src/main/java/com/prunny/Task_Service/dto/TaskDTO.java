@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -25,7 +25,7 @@ public class TaskDTO {
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-    private List<String> assignedUsersDTO;
+    private Set<String> assignedUserEmails;
 
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime dueDate;
@@ -38,6 +38,7 @@ public class TaskDTO {
 
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime completionDate;
+
 
 
 }

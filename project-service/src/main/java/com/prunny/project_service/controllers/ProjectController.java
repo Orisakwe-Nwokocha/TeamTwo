@@ -1,6 +1,7 @@
 package com.prunny.project_service.controllers;
 
 import com.prunny.project_service.dto.requests.AddTaskRequest;
+import com.prunny.project_service.dto.requests.AssignTaskDTO;
 import com.prunny.project_service.dto.requests.CreateProjectRequest;
 
 import com.prunny.project_service.dto.responses.ProjectProgressResponse;
@@ -47,6 +48,19 @@ public class ProjectController {
     public ResponseEntity<?> getAllTasksForProject(@PathVariable Long id) {
         log.info("REST request to retrieve all tasks for project");
         return ResponseEntity.ok(projectService.getAllTasksForProject(id));
+    }
+
+    @GetMapping("/{id}/tasks/{taskId}")
+    public ResponseEntity<?> viewProjectTask(@PathVariable Long id, @PathVariable Long taskId) {
+        log.info("REST request to retrieve a project task");
+        return ResponseEntity.ok(projectService.viewProjectTask(id, taskId));
+    }
+
+    @PostMapping("/{id}/tasks/{taskId}/assign")
+    public ResponseEntity<?> assignTask(@PathVariable Long id, @PathVariable Long taskId,
+                                        @RequestBody AssignTaskDTO request) {
+        log.info("REST request to assign a project task to users");
+        return ResponseEntity.ok(projectService.assignTask(id, taskId, request));
     }
 
     @GetMapping("/{id}/progress")
