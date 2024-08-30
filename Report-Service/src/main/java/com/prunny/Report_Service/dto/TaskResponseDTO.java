@@ -1,50 +1,38 @@
 package com.prunny.Report_Service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
+import java.util.Set;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
 public class TaskResponseDTO {
+    private Long projectId;
 
     private Long taskId;
     private String taskName;
-
     private String description;
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
+    private String taskStatus;
+    private String taskPriority;
+    private boolean isOverdue;
+    private Set<String> assignedUserEmails;
 
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime dueDate;
 
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime createdAt;
 
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime updatedAt;
 
-    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' hh:mm a")
+    @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime completionDate;
-
-    private boolean isOverdue;
-
-    private String taskStatus;
-//    private List<TaskUser> assignedUsers = new ArrayList<>();
-
-
-    public TaskResponseDTO(Long taskId, String taskName, String description, LocalDateTime createdAt,
-                           LocalDateTime completionDate, LocalDateTime dueDate, String taskStatus) {
-        this.taskId = taskId;
-        this.taskName = taskName;
-        this.description = description;
-        this.createdAt = createdAt;
-        this.completionDate = completionDate;
-        this.dueDate = dueDate;
-        this.taskStatus = taskStatus;
-    }
 }

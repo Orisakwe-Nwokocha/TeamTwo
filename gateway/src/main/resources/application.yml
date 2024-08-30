@@ -16,7 +16,7 @@ spring:
         - id: report-service
           uri: lb://report-service
           predicates:
-            - Path=/reports/**
+            - Path=/api/v1/report/**
 
 eureka:
   client:

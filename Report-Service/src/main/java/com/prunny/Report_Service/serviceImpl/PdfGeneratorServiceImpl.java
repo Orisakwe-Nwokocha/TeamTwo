@@ -6,27 +6,41 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.UnitValue;
+import com.prunny.Report_Service.client.ProjectClient;
 import com.prunny.Report_Service.client.TaskClient;
+import com.prunny.Report_Service.dto.ProjectDTO;
 import com.prunny.Report_Service.dto.TaskResponseDTO;
 import com.prunny.Report_Service.service.PdfGeneratorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 
     private final TaskClient taskClient;
+    private final ProjectClient projectClient;
 
-    public PdfGeneratorServiceImpl(TaskClient taskClient) {
+    public PdfGeneratorServiceImpl(TaskClient taskClient, ProjectClient projectClient) {
         this.taskClient = taskClient;
+        this.projectClient = projectClient;
     }
 
     @Override
     public byte[] generateTaskReport(Long projectId, Long taskId) {
+        // Fetch project details
+        ProjectDTO project = projectClient.getTask(projectId).getData();
+        log.info("Fetched project: {}", project);  // Log the fetched project
+
+        // Fetch task details
+        TaskResponseDTO task = taskClient.getTask(projectId, taskId).getData();
+        log.info("Fetched task: {}", task);  // Log the fetched task
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         // Initialize PDF writer and document
@@ -36,14 +50,10 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 
         // Add title and project/task information
         document.add(new Paragraph("Task Report").setBold().setFontSize(16));
-        document.add(new Paragraph("Project ID: " + projectId));
-        document.add(new Paragraph("Task ID: " + taskId));
+        document.add(new Paragraph("Project: " + project.getName()));
+        document.add(new Paragraph("Project Manager: " + project.getManager()));
+        document.add(new Paragraph("Project Members: " + project.getTeamMembers()));
         document.add(new Paragraph(" ")); // Adding a space for readability
-
-        // Fetch task details
-        TaskResponseDTO task = taskClient.getTaskDetails(projectId, taskId);
-
-        log.info("Fetched task: {}", task);  // Log the fetched task
 
         // Check if task is found and populate PDF
         if (task != null) {
@@ -51,13 +61,16 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
                     .useAllAvailableWidth();
 
             // Add task details with null checks
-            addTableRow(table, "Task ID", task.getTaskId() != null ? String.valueOf(task.getTaskId()) : "N/A");
+            addTableRow(table, "Task ID", String.valueOf(task.getTaskId()));
             addTableRow(table, "Task Name", task.getTaskName());
             addTableRow(table, "Description", task.getDescription());
-            addTableRow(table, "Created Date", task.getCreatedAt() != null ? task.getCreatedAt().toString() : "N/A");
-            addTableRow(table, "Completion Date", task.getCompletionDate() != null ? task.getCompletionDate().toString() : "N/A");
-            addTableRow(table, "Due Date", task.getDueDate() != null ? task.getDueDate().toString() : "N/A");
+            addTableRow(table, "Assigned Members", String.valueOf(task.getAssignedUserEmails()));
+            addTableRow(table, "Priority", task.getTaskPriority());
             addTableRow(table, "Status", task.getTaskStatus());
+            addTableRow(table, "Overdue", String.valueOf(task.isOverdue()));
+            addTableRow(table, "Created Date", format(task.getCreatedAt()));
+            addTableRow(table, "Due Date", format(task.getDueDate()));
+            addTableRow(table, "Completion Date", format(task.getCompletionDate()));
 
             document.add(table);
         } else {
@@ -72,7 +85,13 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     // Helper method to add table rows with null checks
     private void addTableRow(Table table, String header, String value) {
         table.addCell(header);
-        table.addCell(value != null ? value : "N/A");
+        table.addCell(!Objects.equals(value, "null") ? value : "N/A");
+    }
+
+    private static String format(LocalDateTime localDateTime) {
+        if (Objects.isNull(localDateTime)) return "N/A";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE',' dd-MMMM-yyyy 'at' h:mm a");
+        return localDateTime.format(formatter);
     }
 
 }
