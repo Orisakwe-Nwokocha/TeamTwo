@@ -73,7 +73,7 @@
             <p><strong>Due Date:</strong> <span th:text="${@dateUtils.formatDateTime(task.dueDate)}"></span></p>
             <p><strong>Completion Date:</strong> <span th:text="${@dateUtils.formatDateTime(task.completionDate)}"></span></p>
             <p><strong>Overdue:</strong> <span th:text="${task.isOverdue ? 'Yes' : 'No'}"></span></p>
-            <p><strong>Assigned Users:</strong> <span th:text="${task.assignedUsersDTO}"></span></p>
+            <p><strong>Assigned Users:</strong> <span th:text="${task.assignedUserEmails}"></span></p>
 
         </div>
     </th:block>

@@ -113,6 +113,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ApiResponse<TaskResponseDTO> assignTask(Long id, Long taskId, AssignTaskDTO request) {
         log.info("Request to assign task: {}, to members: {}; for Project: {}", taskId, request.getUserEmails(), id);
         Project project = getBy(id);
+        if (!project.getTaskIDs().contains(taskId)) throw new ResourceNotFoundException("Task does not exist");
         project.getTeamMembers().addAll(request.getUserEmails());
         projectRepository.save(project);
         TaskResponseDTO response = taskServiceClient.assignTask(taskId, id, request).getData();

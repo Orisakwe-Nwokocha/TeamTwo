@@ -25,7 +25,7 @@ public class TaskDTO {
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-    private Set<String> assignedUsersDTO;
+    private Set<String> assignedUserEmails;
 
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime dueDate;
