@@ -36,9 +36,10 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectBy(id));
     }
 
-    @PostMapping("/add-task")
-    public ResponseEntity<?> addTask(@RequestBody AddTaskRequest request) {
+    @PostMapping("/{id}/add-task")
+    public ResponseEntity<?> addTask(@PathVariable Long id, @RequestBody AddTaskRequest request) {
         log.info("REST request to add task");
+        request.setProjectId(id);
         return ResponseEntity.status(CREATED).body(projectService.addTask(request));
     }
 

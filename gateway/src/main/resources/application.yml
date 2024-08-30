@@ -1,23 +1,22 @@
 spring:
   application:
     name: gateway
+
   cloud:
     gateway:
       routes:
-        - id: project-service
-          uri: ${PROJECT_ROUTE_URI:http://localhost:8083/}
-          predicates:
-            - Path=/projects/**
-
         - id: task-service
-          uri: ${TASK_ROUTE_URI:http://localhost:8082/}
+          uri: lb://task-service
           predicates:
             - Path=/api/v1/task/**
-
-        - id: Report-Service
-          uri: ${REPORT_ROUTE_URI:http://localhost:8084/}
+        - id: project-service
+          uri: lb://project-service
           predicates:
-            - Path=/api/v1/
+            - Path=/projects/**
+        - id: report-service
+          uri: lb://report-service
+          predicates:
+            - Path=/reports/**
 
 eureka:
   client:
