@@ -12,7 +12,6 @@ import com.prunny.Task_Service.repository.TaskRepository;
 import com.prunny.Task_Service.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,52 +25,36 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final ProjectClient projectClient;
     private final TaskRepository taskRepository;
     ModelMapper modelMapper = new ModelMapper();
 
 
     public CommentServiceImpl(CommentRepository commentRepository, ProjectClient projectClient, TaskRepository taskRepository) {
         this.commentRepository = commentRepository;
-        this.projectClient = projectClient;
         this.taskRepository = taskRepository;
     }
 
     @Override
-    public CommentResponseDto commentOnTask(Long taskId, CommentDto commentDto) throws MessagingException, ResourceNotFoundException {
-
-        //VALIDATION
-        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(commentDto.getProjectId());
-
-
-        if (response == null || response.getBody() == null) {
-            throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
-        }
+    public CommentResponseDto commentOnTask(CommentDto commentDto)
+            throws MessagingException, ResourceNotFoundException {
 
         // Find the task by ID
-        Optional<Task> taskOptional = taskRepository.findById(taskId);
-
-        if (taskOptional.isEmpty()) {
-            throw new MessagingException("Task not found");
-        }
+        Task task = taskRepository.findById(commentDto.getUserTaskId())
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found "));
 
         // Validate that the comment text is not empty
-        if (commentDto.getText().trim().isEmpty()) {
+        if (commentDto.getText() == null || commentDto.getText().trim().isEmpty()) {
             throw new MessagingException("Comment cannot be empty");
         }
 
-        Task task = taskOptional.get();
-
-
         // Create and save the comment
         Comment comment = new Comment();
-        comment.setProjectId(commentDto.getProjectId());
         comment.setText(commentDto.getText());
-      //  comment.setUserId(commentDto.getUserId());
         comment.setTask(task);
         comment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
 
+        // Return the mapped CommentResponseDto
         return modelMapper.map(comment, CommentResponseDto.class);
     }
 
@@ -88,19 +71,7 @@ public class CommentServiceImpl implements CommentService {
         return modelMapper.map(comment, CommentResponseDto.class);
     }
 
-    @Override
-    public List<CommentResponseDto> getCommentsByProject(Long projectId) throws MessagingException {
-        List<Comment> comments = commentRepository.findByProjectId(projectId);
 
-        if (comments.isEmpty()) {
-            throw new MessagingException("No comments found for this project");
-        }
-
-        // Map the list of comments to a list of CommentResponseDto
-        return comments.stream()
-                .map(comment -> modelMapper.map(comment, CommentResponseDto.class))
-                .collect(Collectors.toList());
-    }
 
         @Override
         public List<CommentResponseDto> getCommentsByTaskId(Long taskId) throws MessagingException {
@@ -110,7 +81,7 @@ public class CommentServiceImpl implements CommentService {
             }
 
             // Fetch comments for the given task
-            List<Comment> comments = commentRepository.findByTask_TaskId(taskId);
+            List<Comment> comments = commentRepository.findByUserTaskId(taskId);
             if (comments.isEmpty()) {
                 throw new MessagingException("No comments found for this task");
             }

@@ -13,18 +13,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/comment")
+@RequestMapping("/api/v1/task")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/comment_on_task/{taskId}")
-    public ResponseEntity<?> commentOnTask(@PathVariable("taskId") Long taskId, @RequestBody CommentDto commentDto) throws ResourceAlreadyExistsException, ResourceNotFoundException, MessagingException {
+    @PostMapping("/comment_on_task")
+    public ResponseEntity<?> commentOnTask(@RequestBody CommentDto commentDto) throws  ResourceNotFoundException, MessagingException {
         ApiResponse<CommentResponseDto> response = ApiResponse.<CommentResponseDto>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(commentService.commentOnTask(taskId, commentDto)) //projectId,
+                .data(commentService.commentOnTask( commentDto))
                 .build();
 
         return ResponseEntity.ok(response);
@@ -42,17 +42,6 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
-
-    @GetMapping("/get_Comment_project/{projectId}")
-    public ResponseEntity<?> getCommentsByProjectId(@PathVariable("projectId") Long projectId) throws ResourceAlreadyExistsException, ResourceNotFoundException, MessagingException {
-        ApiResponse<List<CommentResponseDto>> response = ApiResponse.<List<CommentResponseDto>>builder()
-                .responseTime(LocalDateTime.now())
-                .success(true)
-                .data(commentService.getCommentsByProject(projectId)) //projectId,
-                .build();
-
-        return ResponseEntity.ok(response);
-    }
 
 
     @GetMapping("/get_Comment_task/{taskId}")

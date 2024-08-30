@@ -27,7 +27,6 @@ public class TaskProgressServiceImpl implements TaskProgressService {
     private final ProjectClient projectClient;
     private final TaskRepository taskRepository;
     ModelMapper modelMapper = new ModelMapper();
-    ObjectMapper objectMapper = new ObjectMapper();
 
     public TaskProgressServiceImpl(ProjectClient projectClient, TaskRepository taskRepository) {
         this.projectClient = projectClient;
@@ -36,23 +35,16 @@ public class TaskProgressServiceImpl implements TaskProgressService {
 
 
     @Override
-    public TaskResponseDTO markTaskAsCompleted(Long taskId, Long projectId, TaskStatus taskStatus) throws ResourceNotFoundException,  ResourceAlreadyExistsException {
+    public TaskResponseDTO updateTaskProgress(Long taskId, Long projectId, TaskStatus taskStatus) throws ResourceNotFoundException, ResourceAlreadyExistsException {
 
-        //VALIDATION
+
         ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(projectId);
-
-
         if (response == null || response.getBody() == null) {
             throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
         }
 
-        Optional<Task> taskOptional = taskRepository.findById(taskId);
-
-        if (taskOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Task not found");
-        }
-
-        Task task = taskOptional.get();
+        Task task = taskRepository.findById(taskId).orElseThrow(() ->
+                new ResourceNotFoundException("Task not found"));
 
         if (task.getTaskStatus() == TaskStatus.COMPLETED) {
             throw new ResourceAlreadyExistsException("Task is already completed");
@@ -60,20 +52,12 @@ public class TaskProgressServiceImpl implements TaskProgressService {
 
         task.setOverdue(task.getDueDate().isBefore(LocalDateTime.now()));
         task.setTaskStatus(taskStatus);
-
-
         task.setCompletionDate(LocalDateTime.now());
 
-
         taskRepository.save(task);
-        log.info("Mark task as completed");
+        log.info("Task status updated");
 
-        TaskResponseDTO taskResponse = modelMapper.map(task,TaskResponseDTO.class);
-
-//        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-//        taskResponse.setProjectDTO(Collections.singletonList(projectDTO));
-
-      return taskResponse;
+        return modelMapper.map(task, TaskResponseDTO.class);
     }
 
 }

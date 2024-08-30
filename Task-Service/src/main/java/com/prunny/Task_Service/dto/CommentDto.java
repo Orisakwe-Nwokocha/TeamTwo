@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentDto {
 
-    private long projectId;
-    private long taskId;
     private String text;
+
+    private Long userTaskId;
+
+    private Long userId;
 
 }

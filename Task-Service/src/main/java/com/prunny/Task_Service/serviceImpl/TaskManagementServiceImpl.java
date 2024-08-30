@@ -56,15 +56,9 @@ public class TaskManagementServiceImpl implements TaskManagementService {
 
         //TODO: no need for validation since this call is only made through the project service
         //TODO: the validation of a project is done in the project service
-       //VALIDATION
-//        ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(taskRequest.getProjectId());
-//
-//
-//        if (response == null || response.getBody() == null) {
-//            throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
-//        }
 
-        Task task = modelMapper.map(taskRequest, Task.class);
+        Task task = new Task();
+       // Task task = modelMapper.map(taskRequest, Task.class);
         task.setTaskStatus(TO_DO);
         task.setTaskName(taskRequest.getTaskName());
         task.setDescription(taskRequest.getDescription());
@@ -73,16 +67,9 @@ public class TaskManagementServiceImpl implements TaskManagementService {
         task.setDueDate(taskRequest.getDueDate());
         task.setProjectId(taskRequest.getProjectId());
 
-        task = taskRepository.save(task);
+         taskRepository.save(task);
         log.info("task successfully saved to the database");
-
-        taskRepository.save(task);
-        log.info("Task successfully created and saved to the database");
-
-
-        // Extract project information from the response
-//        ProjectDTO projectDTO = objectMapper.convertValue(response.getBody().get("data"), ProjectDTO.class);
-//        taskResponseDto.setProjectDTO(Collections.singletonList(projectDTO));
+         modelMapper.map(task,taskRequest);
 
         return modelMapper.map(task, TaskResponseDTO.class);
     }
@@ -90,7 +77,7 @@ public class TaskManagementServiceImpl implements TaskManagementService {
 
 
     @Override
-    public TaskResponseDTO updateTask(Long taskId, TaskDTO taskRequest)
+    public TaskResponseDTO updateTask(Long taskId, TaskRequestDTO taskRequest)
             throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
 
         //VALIDATION
@@ -101,14 +88,13 @@ public class TaskManagementServiceImpl implements TaskManagementService {
             throw new ResourceNotFoundException("PROJECT DOES NOT EXIST! CREATE THE PROJECT FIRST");
         }
 
-
         Task taskToUpdate = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
-        taskToUpdate.setTaskStatus(TaskStatus.valueOf(taskRequest.getTaskStatus()));
+        taskToUpdate.setTaskStatus(taskRequest.getTaskStatus());
         taskToUpdate.setTaskName(taskRequest.getTaskName());
         taskToUpdate.setProjectId(taskRequest.getProjectId());
-        taskToUpdate.setTaskPriority(TaskPriority.valueOf(taskRequest.getTaskPriority()));
+        taskToUpdate.setTaskPriority(taskRequest.getTaskPriority());
         taskToUpdate.setDueDate(taskRequest.getDueDate());
         taskToUpdate.setUpdatedAt(LocalDateTime.now());
         taskToUpdate.setDescription(taskRequest.getDescription());

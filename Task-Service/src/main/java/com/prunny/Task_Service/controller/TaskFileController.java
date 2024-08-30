@@ -16,13 +16,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/v1/task_file")
+@RequestMapping("/api/v1/task")
 @RequiredArgsConstructor
 public class TaskFileController {
 
     private final TaskFileService taskFileService;
 
-    @PostMapping("/{taskId}/uploadFile")
+    @PostMapping("/task_file/{taskId}/uploadFile")
     public ResponseEntity<?> uploadFile(@PathVariable("taskId") Long taskId, MultipartFile file, String fileName) throws ResourceAlreadyExistsException, ResourceNotFoundException, IOException {
         ApiResponse<TaskFileDTO> response = ApiResponse.<TaskFileDTO>builder()
                 .responseTime(LocalDateTime.now())
@@ -34,7 +34,7 @@ public class TaskFileController {
     }
 
 
-    @GetMapping("/download/{fileId}")
+    @GetMapping("/task_file/download/{fileId}")
     public ResponseEntity<?> getDownloadUrl(@PathVariable("fileId") String fileId) throws ResourceAlreadyExistsException, ResourceNotFoundException, IOException {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .responseTime(LocalDateTime.now())

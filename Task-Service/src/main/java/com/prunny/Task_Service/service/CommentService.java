@@ -12,11 +12,11 @@ import java.util.List;
 public interface CommentService {
 
 
-    CommentResponseDto commentOnTask(Long taskId, CommentDto commentDto) throws MessagingException, ResourceNotFoundException;
+    CommentResponseDto commentOnTask( CommentDto commentDto) throws MessagingException, ResourceNotFoundException;
 
     CommentResponseDto getCommentById(long id) throws MessagingException;
 
-    List<CommentResponseDto> getCommentsByProject(Long projectId)throws MessagingException ;
+   // List<CommentResponseDto> getCommentsByProject(Long projectId)throws MessagingException ;
 
     List<CommentResponseDto> getCommentsByTaskId( Long taskId)  throws MessagingException;
 

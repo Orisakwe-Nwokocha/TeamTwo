@@ -15,19 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/v1/task_progress")
+@RequestMapping("/api/v1/task")
 @RequiredArgsConstructor
 public class TaskProgressController {
 
     private final TaskProgressService taskProgressService;
 
-    @PostMapping("/{taskId}/{projectId}")
-    public ResponseEntity<?> createNewTask(@PathVariable("taskId") Long taskId,
+    @PostMapping("/task_progress/{taskId}/{projectId}")
+    public ResponseEntity<?> updateTaskProgress(@PathVariable("taskId") Long taskId,
       @PathVariable("projectId")Long projectId,@RequestParam TaskStatus taskStatus) throws ResourceAlreadyExistsException, ResourceNotFoundException {
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(taskProgressService.markTaskAsCompleted(taskId, projectId, taskStatus))
+                .data(taskProgressService.updateTaskProgress(taskId, projectId, taskStatus))
                 .build();
 
         return ResponseEntity.ok(response);

@@ -22,7 +22,7 @@ public interface TaskManagementService {
             throws ResourceNotFoundException, ResourceAlreadyExistsException;
 
 
-    TaskResponseDTO updateTask(Long taskId, TaskDTO taskRequest)
+    TaskResponseDTO updateTask(Long taskId, TaskRequestDTO taskRequest)
             throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException;
 
 

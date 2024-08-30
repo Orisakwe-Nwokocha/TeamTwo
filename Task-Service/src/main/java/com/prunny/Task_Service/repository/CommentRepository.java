@@ -10,11 +10,9 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Optional<Comment> findById(Long id);
+    List<Comment> findByUserTaskId(Long id);
 
-    List<Comment> findByProjectId(Long projectId);
 
-    List<Comment> findByTask_TaskId(Long taskId);
 
 
 }

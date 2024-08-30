@@ -38,7 +38,7 @@ public class TaskController {
     }
 
     @PutMapping("/updateTask/{taskId}")
-    public ResponseEntity<?> updateTask(@PathVariable("taskId") Long taskId, @RequestBody TaskDTO taskRequestDTO) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
+    public ResponseEntity<?> updateTask(@PathVariable("taskId") Long taskId, @RequestBody TaskRequestDTO taskRequestDTO) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
 
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())

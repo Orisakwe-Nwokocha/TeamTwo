@@ -10,16 +10,11 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-//    Optional<Task> findByAssignedUsers_UserIdAndTaskId(long userId, Long taskId);
-//
-//
 
     List<Task> findByTaskStatusAndTaskPriority(TaskStatus status, TaskPriority priority);
     List<Task> findByTaskStatusAndProjectId(TaskStatus status, Long projectId);
     List<Task> findByTaskPriorityAndProjectId(TaskPriority priority, Long projectId);
     List<Task> findByTaskStatusAndTaskPriorityAndProjectId(TaskStatus status, TaskPriority priority, Long projectId);
-
-
 
     List<Task> findByTaskPriority(TaskPriority taskPriority);
 

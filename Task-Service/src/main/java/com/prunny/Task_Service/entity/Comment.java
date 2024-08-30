@@ -20,7 +20,7 @@ public class Comment {
 
     private String text;
 
-    private Long projectId;
+    private Long userTaskId;
 
     private Long userId;
 
