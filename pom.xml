@@ -13,6 +13,7 @@
         <module>gateway</module>
         <module>Task-Service</module>
         <module>project-service</module>
+        <module>Report-Service</module>
     </modules>
 
     <properties>
