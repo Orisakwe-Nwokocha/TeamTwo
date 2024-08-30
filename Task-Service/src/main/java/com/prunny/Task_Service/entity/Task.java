@@ -1,7 +1,6 @@
 package com.prunny.Task_Service.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.prunny.Task_Service.enums.TaskPriority;
 import com.prunny.Task_Service.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -9,7 +8,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,7 +44,7 @@ public class Task {
 //    )
 //    private List<TaskUser> assignedUsers = new ArrayList<>();
 @ElementCollection
-private List<String> assignedUserEmails = new ArrayList<>();
+private Set<String> assignedUserEmails = new HashSet<>();
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 

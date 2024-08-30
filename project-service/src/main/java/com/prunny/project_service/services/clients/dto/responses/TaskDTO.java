@@ -1,16 +1,18 @@
 package com.prunny.project_service.services.clients.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class TaskDTO {
@@ -23,7 +25,7 @@ public class TaskDTO {
     private String taskStatus;
     private String taskPriority;
     private boolean isOverdue;
-    private List<String> assignedUsersDTO;
+    private Set<String> assignedUserEmails;
 
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime dueDate;

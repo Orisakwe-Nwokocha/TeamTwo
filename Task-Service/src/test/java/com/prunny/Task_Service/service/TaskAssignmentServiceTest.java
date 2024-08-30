@@ -2,7 +2,7 @@ package com.prunny.Task_Service.service;
 
 import com.prunny.Task_Service.client.ProjectClient;
 import com.prunny.Task_Service.dto.TaskResponseDTO;
-import com.prunny.Task_Service.dto.TaskUserDTO;
+import com.prunny.Task_Service.dto.AssignTaskDTO;
 import com.prunny.Task_Service.entity.Task;
 import com.prunny.Task_Service.exception.ResourceAlreadyExistsException;
 import com.prunny.Task_Service.exception.ResourceNotFoundException;
@@ -42,12 +42,12 @@ public class TaskAssignmentServiceTest {
         // Arrange
         Long taskId = 1L;
         Long projectId = 1L;
-        TaskUserDTO taskUserDTO = new TaskUserDTO();
-        taskUserDTO.setUserEmail("test@example.com");
+        AssignTaskDTO assignTaskDTO = new AssignTaskDTO();
+        assignTaskDTO.setUserEmails(Set.of("test@example.com"));
 
         Task task = new Task();
         task.setTaskId(taskId);
-        task.setAssignedUserEmails(new ArrayList<>());
+        task.setAssignedUserEmails(new HashSet<>());
 
         TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
         taskResponseDTO.setTaskId(taskId);
@@ -64,7 +64,7 @@ public class TaskAssignmentServiceTest {
         when(modelMapper.map(task, TaskResponseDTO.class)).thenReturn(taskResponseDTO);
 
 
-        TaskResponseDTO result = taskAssignmentService.assignTaskToUsers(taskId, projectId, taskUserDTO);
+        TaskResponseDTO result = taskAssignmentService.assignTaskToUsers(taskId, projectId, assignTaskDTO);
 
 
         assertNotNull(result);
@@ -86,16 +86,16 @@ public class TaskAssignmentServiceTest {
         when(projectClient.getProjectById(anyLong())).thenReturn(mockResponse);
 
         Task task = new Task();
-        List<String> assignedEmails = new ArrayList<>();
+        Set<String> assignedEmails = new HashSet<>();
         assignedEmails.add("user@example.com");
         task.setAssignedUserEmails(assignedEmails);
         when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
 
-        TaskUserDTO taskUserDTO = new TaskUserDTO();
-        taskUserDTO.setUserEmail("user@example.com");
+        AssignTaskDTO assignTaskDTO = new AssignTaskDTO();
+        assignTaskDTO.setUserEmails(assignedEmails);
 
         assertThrows(ResourceAlreadyExistsException.class, () ->
-                taskAssignmentService.assignTaskToUsers(1L, 1L, taskUserDTO));
+                taskAssignmentService.assignTaskToUsers(1L, 1L, assignTaskDTO));
 
         verify(taskRepository, times(1)).findById(anyLong());
         verify(taskRepository, times(0)).save(any(Task.class)); // Should not save because of the exception
@@ -107,11 +107,11 @@ public class TaskAssignmentServiceTest {
 
         when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        TaskUserDTO taskUserDTO = new TaskUserDTO();
-        taskUserDTO.setUserEmail("user@example.com");
+        AssignTaskDTO assignTaskDTO = new AssignTaskDTO();
+        assignTaskDTO.setUserEmails(Set.of("test@example.com"));
 
         assertThrows(ResourceNotFoundException.class, () ->
-                taskAssignmentService.assignTaskToUsers(1L, 1L, taskUserDTO));
+                taskAssignmentService.assignTaskToUsers(1L, 1L, assignTaskDTO));
 
         verify(taskRepository, times(1)).findById(anyLong());
         verify(taskRepository, times(0)).save(any(Task.class));

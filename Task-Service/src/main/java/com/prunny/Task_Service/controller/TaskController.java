@@ -49,7 +49,7 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("get/{projectId}/{taskId}")
+    @GetMapping("/get/{projectId}/{taskId}")
     public ResponseEntity<?> getTaskDetails(@PathVariable("projectId") Long projectId,@PathVariable("taskId") Long taskId) throws ResourceNotFoundException, NotMemberOfProjectException, NotLeaderOfProjectException {
 
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()

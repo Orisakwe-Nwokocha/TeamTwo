@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/task")
@@ -23,13 +21,13 @@ public class AssignTaskController {
     @PostMapping("/assign_task/{taskId}/{projectId}")
     public ResponseEntity<?> assignTaskToUser(@PathVariable("taskId") Long taskId,
                                               @PathVariable("projectId")Long projectId,
-                                              @RequestBody TaskUserDTO taskUserDTO) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+                                              @RequestBody AssignTaskDTO request) throws ResourceAlreadyExistsException, ResourceNotFoundException {
 
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
                 .message("User assigned to task successfully")
-                .data(taskAssignmentService.assignTaskToUsers(taskId, projectId, taskUserDTO))
+                .data(taskAssignmentService.assignTaskToUsers(taskId, projectId, request))
                 .build();
         return ResponseEntity.ok(response);
     }
