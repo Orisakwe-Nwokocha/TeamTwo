@@ -1,5 +1,7 @@
 package com.prunny.Report_Service.serviceImpl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.layout.Document;
@@ -15,8 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -25,14 +29,20 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 
     private final TaskClient taskClient;
     private final ProjectClient projectClient;
+    private final Cloudinary cloudinary;
 
-    public PdfGeneratorServiceImpl(TaskClient taskClient, ProjectClient projectClient) {
+
+    public PdfGeneratorServiceImpl(TaskClient taskClient, ProjectClient projectClient, Cloudinary cloudinary) {
         this.taskClient = taskClient;
         this.projectClient = projectClient;
+        this.cloudinary = cloudinary;
     }
 
     @Override
-    public byte[] generateTaskReport(Long projectId, Long taskId) {
+    public String generateAndUploadTaskReport(Long projectId, Long taskId) throws IOException {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
         // Fetch project details
         ProjectDTO project = projectClient.getTask(projectId).getData();
         log.info("Fetched project: {}", project);  // Log the fetched project
@@ -41,7 +51,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         TaskResponseDTO task = taskClient.getTask(projectId, taskId).getData();
         log.info("Fetched task: {}", task);  // Log the fetched task
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      //  ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         // Initialize PDF writer and document
         PdfWriter writer = new PdfWriter(byteArrayOutputStream);
@@ -79,7 +89,20 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 
         // Close the document and return the PDF as a byte array
         document.close();
-        return byteArrayOutputStream.toByteArray();
+
+       // return byteArrayOutputStream.toByteArray();
+
+        // Upload the PDF to Cloudinary
+        byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+        Map<?, ?> uploadResult = cloudinary.uploader().upload(pdfBytes, ObjectUtils.asMap(
+                "resource_type", "raw",
+                "public_id", "task_reports/" + taskId + "_report",
+                "overwrite", true
+        ));
+
+        // Return the URL for download
+        String fileUrl = uploadResult.get("secure_url").toString();
+        return fileUrl;
     }
 
     // Helper method to add table rows with null checks

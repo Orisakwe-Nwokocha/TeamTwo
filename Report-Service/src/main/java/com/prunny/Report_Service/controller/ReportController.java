@@ -1,8 +1,10 @@
 package com.prunny.Report_Service.controller;
 
+import com.itextpdf.io.exceptions.IOException;
 import com.prunny.Report_Service.service.PdfGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +21,15 @@ public class ReportController {
             @PathVariable("taskId") Long taskId,
             @PathVariable("projectId") Long projectId) {
 
-        byte[] pdfReport = pdfGeneratorService.generateTaskReport(taskId, projectId);
+        try {
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=task_report.pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfReport);
+            String fileUrl = pdfGeneratorService.generateAndUploadTaskReport(taskId, projectId);
+            return ResponseEntity.ok("User Task Report: " + fileUrl); // Return the Cloudinary URL
+        } catch (IOException | java.io.IOException e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to generate or upload the task report.");
+        }
     }
+
 }
