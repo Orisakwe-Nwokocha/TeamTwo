@@ -1,6 +1,7 @@
 package com.prunny.Report_Service;
 
 import com.prunny.Report_Service.client.TaskClient;
+import com.prunny.Report_Service.dto.ApiResponse;
 import com.prunny.Report_Service.dto.TaskResponseDTO;
 import com.prunny.Report_Service.serviceImpl.PdfGeneratorServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,11 @@ public class PdfGeneratorServiceTest {
         Mockito.when(mockTaskResponseDTO.getTaskStatus()).thenReturn("IN_PROGRESS");
 
         TaskClient mockTaskClient = Mockito.mock(TaskClient.class);
-        Mockito.when(mockTaskClient.getTaskDetails(Mockito.anyLong(), Mockito.anyLong())).thenReturn(mockTaskResponseDTO);
+        Mockito.when(mockTaskClient.getTask(Mockito.anyLong(), Mockito.anyLong()).getData())
+                .thenReturn(mockTaskResponseDTO);
 
 
-        byte[] pdfReport = pdfGeneratorService.generateTaskReport(1L, 1L);
+        ApiResponse<String> pdfReport = pdfGeneratorService.generateAndUploadTaskReport(1L, 1L);
 
         // Validate the PDF content
         assertNotNull(pdfReport);

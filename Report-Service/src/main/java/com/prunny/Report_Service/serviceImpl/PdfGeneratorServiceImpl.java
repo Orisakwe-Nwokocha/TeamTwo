@@ -10,6 +10,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.UnitValue;
 import com.prunny.Report_Service.client.ProjectClient;
 import com.prunny.Report_Service.client.TaskClient;
+import com.prunny.Report_Service.dto.ApiResponse;
 import com.prunny.Report_Service.dto.ProjectDTO;
 import com.prunny.Report_Service.dto.TaskResponseDTO;
 import com.prunny.Report_Service.service.PdfGeneratorService;
@@ -22,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 @Slf4j
@@ -39,71 +42,90 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     }
 
     @Override
-    public String generateAndUploadTaskReport(Long projectId, Long taskId) throws IOException {
-
+    public ApiResponse<String> generateAndUploadTaskReport(Long projectId, Long taskId) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         // Fetch project details
-        ProjectDTO project = projectClient.getTask(projectId).getData();
-        log.info("Fetched project: {}", project);  // Log the fetched project
+        ProjectDTO project = fetchProjectDetails(projectId);
 
         // Fetch task details
+        TaskResponseDTO task = fetchTaskDetails(projectId, taskId);
+
+        // Generate PDF document
+        generateTaskReportPdf(byteArrayOutputStream, project, task);
+
+        // Upload the PDF to Cloudinary and return the result
+        return uploadTaskReportPdf(byteArrayOutputStream.toByteArray(), projectId, taskId);
+    }
+
+    private ProjectDTO fetchProjectDetails(Long projectId) {
+        ProjectDTO project = projectClient.getTask(projectId).getData();
+        log.info("Fetched project: {}", project);
+        return project;
+    }
+
+    private TaskResponseDTO fetchTaskDetails(Long projectId, Long taskId) {
         TaskResponseDTO task = taskClient.getTask(projectId, taskId).getData();
-        log.info("Fetched task: {}", task);  // Log the fetched task
+        log.info("Fetched task: {}", task);
+        return task;
+    }
 
-      //  ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        // Initialize PDF writer and document
+    private void generateTaskReportPdf(ByteArrayOutputStream byteArrayOutputStream, ProjectDTO project, TaskResponseDTO task) {
         PdfWriter writer = new PdfWriter(byteArrayOutputStream);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
-        // Add title and project/task information
         document.add(new Paragraph("Task Report").setBold().setFontSize(16));
         document.add(new Paragraph("Project: " + project.getName()));
         document.add(new Paragraph("Project Manager: " + project.getManager()));
         document.add(new Paragraph("Project Members: " + project.getTeamMembers()));
         document.add(new Paragraph(" ")); // Adding a space for readability
 
-        // Check if task is found and populate PDF
         if (task != null) {
-            Table table = new Table(UnitValue.createPercentArray(new float[]{1, 3}))
-                    .useAllAvailableWidth();
-
-            // Add task details with null checks
-            addTableRow(table, "Task ID", String.valueOf(task.getTaskId()));
-            addTableRow(table, "Task Name", task.getTaskName());
-            addTableRow(table, "Description", task.getDescription());
-            addTableRow(table, "Assigned Members", String.valueOf(task.getAssignedUserEmails()));
-            addTableRow(table, "Priority", task.getTaskPriority());
-            addTableRow(table, "Status", task.getTaskStatus());
-            addTableRow(table, "Overdue", String.valueOf(task.isOverdue()));
-            addTableRow(table, "Created Date", format(task.getCreatedAt()));
-            addTableRow(table, "Due Date", format(task.getDueDate()));
-            addTableRow(table, "Completion Date", format(task.getCompletionDate()));
-
+            Table table = new Table(UnitValue.createPercentArray(new float[]{1, 3})).useAllAvailableWidth();
+            populateTaskDetails(table, task);
             document.add(table);
         } else {
             document.add(new Paragraph("Task not found for this project."));
         }
 
-        // Close the document and return the PDF as a byte array
         document.close();
-
-       // return byteArrayOutputStream.toByteArray();
-
-        // Upload the PDF to Cloudinary
-        byte[] pdfBytes = byteArrayOutputStream.toByteArray();
-        Map<?, ?> uploadResult = cloudinary.uploader().upload(pdfBytes, ObjectUtils.asMap(
-                "resource_type", "raw",
-                "public_id", "task_reports/" + taskId + "_report",
-                "overwrite", true
-        ));
-
-        // Return the URL for download
-        String fileUrl = uploadResult.get("secure_url").toString();
-        return fileUrl;
     }
+
+    private void populateTaskDetails(Table table, TaskResponseDTO task) {
+        addTableRow(table, "Task ID", String.valueOf(task.getTaskId()));
+        addTableRow(table, "Task Name", task.getTaskName());
+        addTableRow(table, "Description", task.getDescription());
+        addTableRow(table, "Assigned Members", String.valueOf(task.getAssignedUserEmails()));
+        addTableRow(table, "Priority", task.getTaskPriority());
+        addTableRow(table, "Status", task.getTaskStatus());
+        addTableRow(table, "Overdue", String.valueOf(task.isOverdue()));
+        addTableRow(table, "Created Date", format(task.getCreatedAt()));
+        addTableRow(table, "Due Date", format(task.getDueDate()));
+        addTableRow(table, "Completion Date", format(task.getCompletionDate()));
+    }
+
+    private ApiResponse<String> uploadTaskReportPdf(byte[] pdfBytes, Long projectId, Long taskId) {
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(pdfBytes, ObjectUtils.asMap(
+                    "resource_type", "auto",
+                    "public_id", "reports/project_" + projectId + "/task_" + taskId,
+                    "overwrite", true
+            ));
+            String fileUrl = uploadResult.get("secure_url").toString();
+            return ApiResponse.<String>builder()
+                    .responseTime(now())
+                    .success(true)
+                    .message("Project task report generated successfully")
+                    .data(fileUrl)
+                    .build();
+        } catch (IOException e) {
+            String message = "Error uploading task report PDF";
+            log.error("{}: {}", message, e.getMessage());
+            throw new RuntimeException(message);
+        }
+    }
+
 
     // Helper method to add table rows with null checks
     private void addTableRow(Table table, String header, String value) {

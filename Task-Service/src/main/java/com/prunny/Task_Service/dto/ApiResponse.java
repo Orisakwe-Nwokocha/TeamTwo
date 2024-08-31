@@ -16,8 +16,8 @@ public class ApiResponse<T> {
     @JsonFormat(pattern = "EEEE',' dd-MMMM-yyyy 'at' h:mm a")
     private LocalDateTime responseTime;
     private boolean success;
-    private String message;
     private String error;
-    private String path;
+    private String message;
     private T data;
+    private String path;
 }

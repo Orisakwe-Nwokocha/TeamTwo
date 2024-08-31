@@ -1,8 +1,8 @@
 package com.prunny.Report_Service.service;
 
-import java.io.IOException;
+import com.prunny.Report_Service.dto.ApiResponse;
 
 public interface PdfGeneratorService {
 
-    String generateAndUploadTaskReport(Long projectId,Long taskId) throws IOException;
+    ApiResponse<String> generateAndUploadTaskReport(Long projectId, Long taskId);
 }
