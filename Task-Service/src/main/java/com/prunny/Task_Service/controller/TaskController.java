@@ -31,7 +31,7 @@ public class TaskController {
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(taskManagementService.createNewTask(taskRequestDTO)) //projectId,
+                .data(taskManagementService.createNewTask(taskRequestDTO))
                 .build();
 
         return ResponseEntity.ok(response);
@@ -74,7 +74,6 @@ public class TaskController {
                 .data(tasks)
                 .build();
 
-        // Return the response wrapped in ResponseEntity
         return ResponseEntity.ok(response);
     }
 

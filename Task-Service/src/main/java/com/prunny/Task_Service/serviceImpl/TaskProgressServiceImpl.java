@@ -35,8 +35,7 @@ public class TaskProgressServiceImpl implements TaskProgressService {
 
 
     @Override
-    public TaskResponseDTO updateTaskProgress(Long taskId, Long projectId, TaskStatus taskStatus) throws ResourceNotFoundException, ResourceAlreadyExistsException {
-
+    public TaskResponseDTO updateTaskProgress(Long taskId, Long projectId, String taskStatus) throws ResourceNotFoundException, ResourceAlreadyExistsException {
 
         ResponseEntity<Map<String, Object>> response = projectClient.getProjectById(projectId);
         if (response == null || response.getBody() == null) {
@@ -50,8 +49,11 @@ public class TaskProgressServiceImpl implements TaskProgressService {
             throw new ResourceAlreadyExistsException("Task is already completed");
         }
 
+        // Convert the string taskStatus to the TaskStatus enum
+        TaskStatus statusEnum = TaskStatus.valueOf(taskStatus.toUpperCase());
+
         task.setOverdue(task.getDueDate().isBefore(LocalDateTime.now()));
-        task.setTaskStatus(taskStatus);
+        task.setTaskStatus(statusEnum);
         task.setCompletionDate(LocalDateTime.now());
 
         taskRepository.save(task);

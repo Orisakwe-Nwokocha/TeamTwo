@@ -7,5 +7,5 @@ import com.prunny.Task_Service.exception.ResourceNotFoundException;
 
 public interface TaskProgressService {
 
-    TaskResponseDTO updateTaskProgress(Long taskId, Long projectId, TaskStatus taskStatus) throws ResourceNotFoundException, ResourceAlreadyExistsException;
+    TaskResponseDTO updateTaskProgress(Long taskId, Long projectId,String taskStatus) throws ResourceNotFoundException, ResourceAlreadyExistsException;
 }

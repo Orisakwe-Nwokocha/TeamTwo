@@ -3,6 +3,7 @@ package com.prunny.Task_Service.serviceImpl;
 import com.prunny.Task_Service.client.ProjectClient;
 import com.prunny.Task_Service.dto.CommentDto;
 import com.prunny.Task_Service.dto.CommentResponseDto;
+import com.prunny.Task_Service.dto.UpdateCommentDto;
 import com.prunny.Task_Service.entity.Comment;
 import com.prunny.Task_Service.entity.Task;
 import com.prunny.Task_Service.exception.MessagingException;
@@ -38,20 +39,19 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDto commentOnTask(CommentDto commentDto)
             throws MessagingException, ResourceNotFoundException {
 
-        // Find the task by ID
         Task task = taskRepository.findById(commentDto.getUserTaskId())
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found "));
 
-        // Validate that the comment text is not empty
         if (commentDto.getText() == null || commentDto.getText().trim().isEmpty()) {
             throw new MessagingException("Comment cannot be empty");
         }
 
-        // Create and save the comment
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
+        comment.setUserTaskId(commentDto.getUserTaskId());
         comment.setTask(task);
         comment.setCreatedAt(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
         commentRepository.save(comment);
 
         // Return the mapped CommentResponseDto
@@ -96,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
 
     //, String authentication
     @Override
-    public CommentResponseDto updateComment(Long id, String text) throws MessagingException {
+    public CommentResponseDto updateComment(Long id, UpdateCommentDto updateCommentDto) throws MessagingException {
 
         Optional<Comment> commentOptional = commentRepository.findById(id);
 
@@ -106,24 +106,17 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = commentOptional.get();
 
-//        if (!comment.getUserId().equals(getUserIdFromAuthentication(authentication))) {
-//            throw new MessagingException("You are not authorized to update this comment");
-//        }
 
-        // Validate that the new text is not empty
-        if (text.trim().isEmpty()) {
+        if (updateCommentDto.getText().isEmpty()) {
             throw new MessagingException("Comment text cannot be empty");
         }
 
-        // Update the comment's text and save it
-        comment.setText(text);
+        comment.setText(updateCommentDto.getText());
         comment.setUpdatedAt(LocalDateTime.now());
         commentRepository.save(comment);
 
-        // Map and return the updated comment
         return modelMapper.map(comment, CommentResponseDto.class);
     }
-
 
 
     //, String authorization
@@ -138,12 +131,8 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = commentOptional.get();
 
-        // Check if the authenticated user is the owner of the comment
-
-        // Delete the comment
-        commentRepository.deleteById(id);
+        commentRepository.deleteById(comment.getCommentId());
     }
-
 
 
 }
