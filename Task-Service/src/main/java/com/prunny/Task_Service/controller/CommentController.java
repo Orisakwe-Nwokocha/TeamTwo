@@ -36,34 +36,37 @@ public class CommentController {
         ApiResponse<CommentResponseDto> response = ApiResponse.<CommentResponseDto>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(commentService.getCommentById(taskId)) //projectId,
+                .data(commentService.getCommentById(taskId))
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{taskId}/comments")
+    public ResponseEntity<ApiResponse<List<CommentResponseDto>>> getCommentsByTaskId(@PathVariable Long taskId) throws MessagingException {
 
+            List<CommentResponseDto> comments = commentService.getCommentsByTaskId(taskId);
 
-    @GetMapping("/get_Comment_task/{taskId}")
-    public ResponseEntity<?> getCommentsByTaskId(@PathVariable("taskId") Long taskId) throws ResourceAlreadyExistsException, ResourceNotFoundException, MessagingException {
-        List<CommentResponseDto> comments = commentService.getCommentsByTaskId(taskId);
+            ApiResponse<List<CommentResponseDto>> response = ApiResponse.<List<CommentResponseDto>>builder()
+                    .responseTime(LocalDateTime.parse(LocalDateTime.now().toString()))
+                    .success(true)
+                    .message("Comments retrieved successfully")
+                    .data(comments)
+                    .build();
 
-        ApiResponse<List<CommentResponseDto>> response = ApiResponse.<List<CommentResponseDto>>builder()
-                .responseTime(LocalDateTime.now())
-                .success(true)
-                .data(comments)
-                .build();
+            return ResponseEntity.ok(response);
 
-        return ResponseEntity.ok(response);
     }
+
+
 
     @PutMapping("/update_Comment/{id}")
-    public ResponseEntity<?> updateComments(@PathVariable("id") Long id, @RequestBody String text) throws ResourceAlreadyExistsException, ResourceNotFoundException, MessagingException {
+    public ResponseEntity<?> updateComments(@PathVariable("id") Long id, @RequestBody UpdateCommentDto updateCommentDto) throws ResourceAlreadyExistsException, ResourceNotFoundException, MessagingException {
 
         ApiResponse<CommentResponseDto> response = ApiResponse.<CommentResponseDto>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(commentService.updateComment(id,text)) //projectId,
+                .data(commentService.updateComment(id,updateCommentDto))
                 .build();
 
         return ResponseEntity.ok(response);

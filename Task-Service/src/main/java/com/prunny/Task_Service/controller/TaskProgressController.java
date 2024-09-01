@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/task")
@@ -27,16 +28,25 @@ public class TaskProgressController {
     private final TaskManagementService taskManagementService;
 
     @PostMapping("/task_progress/{taskId}/{projectId}")
-    public ResponseEntity<?> updateTaskProgress(@PathVariable("taskId") Long taskId,
-      @PathVariable("projectId")Long projectId,@RequestParam TaskStatus taskStatus) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+    public ResponseEntity<ApiResponse<TaskResponseDTO>> updateTaskProgress(
+            @PathVariable("taskId") Long taskId,
+            @PathVariable("projectId") Long projectId,
+            @RequestBody Map<String, String> requestBody) throws ResourceAlreadyExistsException, ResourceNotFoundException {
+
+        String taskStatus = requestBody.get("taskStatus");
+
+        TaskResponseDTO updatedTask = taskProgressService.updateTaskProgress(taskId, projectId, taskStatus);
+
+
         ApiResponse<TaskResponseDTO> response = ApiResponse.<TaskResponseDTO>builder()
                 .responseTime(LocalDateTime.now())
                 .success(true)
-                .data(taskProgressService.updateTaskProgress(taskId, projectId, taskStatus))
+                .data(updatedTask)
                 .build();
 
         return ResponseEntity.ok(response);
     }
+
 
 
     @GetMapping("taskProgress/{projectId}/{taskId}")

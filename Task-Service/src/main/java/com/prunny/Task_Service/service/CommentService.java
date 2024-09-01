@@ -2,6 +2,7 @@ package com.prunny.Task_Service.service;
 
 import com.prunny.Task_Service.dto.CommentDto;
 import com.prunny.Task_Service.dto.CommentResponseDto;
+import com.prunny.Task_Service.dto.UpdateCommentDto;
 import com.prunny.Task_Service.exception.MessagingException;
 import com.prunny.Task_Service.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,10 @@ public interface CommentService {
 
     List<CommentResponseDto> getCommentsByTaskId( Long taskId)  throws MessagingException;
 
+
+
     //,String authentication
-    CommentResponseDto updateComment(Long id, String text) throws MessagingException;
+    CommentResponseDto updateComment(Long id, UpdateCommentDto updateCommentDto) throws MessagingException;
 
     //,String authorization
     void deleteComment(Long id)throws MessagingException;
