@@ -75,10 +75,12 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
+        String teamMembers = String.join(", ", project.getTeamMembers());
+
         document.add(new Paragraph("Task Report").setBold().setFontSize(16));
         document.add(new Paragraph("Project: " + project.getName()));
         document.add(new Paragraph("Project Manager: " + project.getManager()));
-        document.add(new Paragraph("Project Members: " + project.getTeamMembers()));
+        document.add(new Paragraph("Project Members: " + teamMembers));
         document.add(new Paragraph(" ")); // Adding a space for readability
 
         if (task != null) {
@@ -93,10 +95,11 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     }
 
     private void populateTaskDetails(Table table, TaskResponseDTO task) {
+        String members = String.join(", ", task.getAssignedUserEmails());
         addTableRow(table, "Task ID", String.valueOf(task.getTaskId()));
         addTableRow(table, "Task Name", task.getTaskName());
         addTableRow(table, "Description", task.getDescription());
-        addTableRow(table, "Assigned Members", String.valueOf(task.getAssignedUserEmails()));
+        addTableRow(table, "Assigned Members", members);
         addTableRow(table, "Priority", task.getTaskPriority());
         addTableRow(table, "Status", task.getTaskStatus());
         addTableRow(table, "Overdue", String.valueOf(task.isOverdue()));
