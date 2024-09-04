@@ -1,19 +1,14 @@
+# Collaborative Task Management System
+
+## Overview
 The Collaborative Task Management System is a web-based application designed to help teams manage their projects and tasks efficiently. It allows users to create and manage projects, assign tasks to team members, track progress, and collaborate effectively within the team.
 
+#### Team Members
 
-#**Task Management System **
+- Orisha
+- Salami
 
-** Overview
-
-This Task Management System is designed to streamline project and task management processes. The system features comprehensive modules for Task Management, Project Management, and Reporting, providing a seamless experience for teams to collaborate, track progress, and generate reports.
-
-#** Team Members
-
-Orisha
-
-Salami
-
-#** Completed Modules
+### Completed Modules
 
 1. Task Management Module
    
@@ -33,9 +28,9 @@ Salami
    Features:
    Commenting system implemented for team discussions on tasks.
    Enabled file attachments and document sharing within tasks.
-
    
-4. Project Management Module
+
+2. Project Management Module
    Task 2.1: Project Creation and Management
    Functionality: Enabled the creation and management of multiple projects.
    Features:
@@ -46,7 +41,8 @@ Salami
    Features:
    Visual display of project progress using Gantt charts and progress bars.
    
-6. Reporting Module
+
+3. Reporting Module
    Task 3.1: Task and Project Reports
    Functionality: Implemented robust reporting features for tasks and projects.
    Features:
